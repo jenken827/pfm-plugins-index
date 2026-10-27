@@ -33,6 +33,26 @@ index.json.sig   base64 的 ed25519 签名，覆盖 index.json 原始字节
 }
 ```
 
+- `kind` 是插件类型，目前有两种：`driver`（存储驱动，身份字段 `driver_id`）与
+  `downloader`（离线下载后端，身份字段 `downloader_id`）。身份字段按类型二选一，必须与包内
+  `plugin.json` 逐字一致，宿主只在 `downloader.plugin` 等于 `downloader_id` 时挂载该后端。
+  下载器条目的样子（其余字段相同）：
+
+  ```json
+  {
+    "kind": "downloader",
+    "name": "pfm-plugin-downloader-aria2",
+    "downloader_id": "aria2",
+    "version": "1.0.0",
+    "abi_version": 1,
+    "platform": "linux-amd64",
+    "url": "https://github.com/jenken827/pfm-plugin-downloader-aria2/releases/download/v1.0.0/pfm-plugin-downloader-aria2-1.0.0-linux-amd64.tar.gz",
+    "sha256": "<包内 tar.gz 的 sha256>",
+    "min_pfm_version": "",
+    "released_at": "2026-10-27T00:00:00Z"
+  }
+  ```
+
 - `platform` 用 `GOOS-GOARCH`（如 `linux-amd64`、`windows-amd64`、`darwin-arm64`），
   每个平台一条；客户端只挑当前平台。
 - `seq` 只增不减：客户端本地记录过更大的值，就会拒绝更旧的索引。
@@ -41,7 +61,7 @@ index.json.sig   base64 的 ed25519 签名，覆盖 index.json 原始字节
 ## 发布一条新条目
 
 ```bash
-# 1) 在插件仓库构建发布包（会打印 sha256）
+# 1) 在插件仓库构建发布包（会打印 sha256）；下载器插件同样有这个脚本
 cd ../pfm-plugin-driver-baidu
 scripts/make-release.sh --version 1.0.0 --seq 1 \
   --url-prefix https://github.com/jenken827/pfm-plugin-driver-baidu/releases/download/v1.0.0/ \
