@@ -18,12 +18,13 @@ index.json.sig   base64 的 ed25519 签名，覆盖 index.json 原始字节
   "seq": 1,
   "plugins": [
     {
-      "name": "pfm-baidu",
+      "kind": "driver",
+      "name": "pfm-plugin-driver-baidu",
       "driver_id": "baidu",
       "version": "1.0.0",
       "abi_version": 1,
       "platform": "linux-amd64",
-      "url": "https://github.com/jenken827/pfm-plugin-baidu/releases/download/v1.0.0/pfm-baidu-1.0.0-linux-amd64.tar.gz",
+      "url": "https://github.com/jenken827/pfm-plugin-driver-baidu/releases/download/v1.0.0/pfm-plugin-driver-baidu-1.0.0-linux-amd64.tar.gz",
       "sha256": "<包内 tar.gz 的 sha256>",
       "min_pfm_version": "",
       "released_at": "2026-10-27T00:00:00Z"
@@ -41,9 +42,9 @@ index.json.sig   base64 的 ed25519 签名，覆盖 index.json 原始字节
 
 ```bash
 # 1) 在插件仓库构建发布包（会打印 sha256）
-cd ../pfm-plugin-baidu
+cd ../pfm-plugin-driver-baidu
 scripts/make-release.sh --version 1.0.0 --seq 1 \
-  --url-prefix https://github.com/jenken827/pfm-plugin-baidu/releases/download/v1.0.0/ \
+  --url-prefix https://github.com/jenken827/pfm-plugin-driver-baidu/releases/download/v1.0.0/ \
   --key <索引签名私钥>
 
 # 2) 把 release/<pkg>.tar.gz 上传到插件仓库的 release（tag = v1.0.0）
