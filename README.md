@@ -4,7 +4,7 @@ pfm 的**官方插件索引**（只放索引，不放插件二进制）。
 
 pfm 客户端通过 `plugin.index_url` 拉这个仓库 release 里的 `index.json`，并用编译进
 二进制的 ed25519 公钥校验同目录的 `index.json.sig`；通过后再按条目里的 `sha256`
-校验下载到的插件包。安装流程与信任模型见 pfm 仓库 `DESIGN.md` §11.4.5.1。
+校验下载到的插件包。安装流程见 pfm 仓库的 `internal/plugin`（`pfm plugin install`）。
 
 ```
 index.json       签名索引（seq 单调递增，防镜像回退）
