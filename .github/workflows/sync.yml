@@ -1,6 +1,6 @@
 name: 同步插件索引
 
-# 每次运行：读各插件仓库的最新 Release → 取其中的 index-entries.json →
+# 每次运行：读各插件仓库的最新版本 tag → 取该 Release 里的 index-entries.json →
 # 重建 index.json → 内容有变化才 seq+1、签名、提交、发 Release。
 #
 # index.json 与 index.json.sig 挂在 tag 为 seq-<N> 的 Release 上，客户端用
@@ -34,8 +34,6 @@ jobs:
       - name: 从各插件仓库重建索引
         id: sync
         shell: bash
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
           python3 scripts/sync.py --config plugins.json --index index.json \

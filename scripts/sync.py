@@ -1,19 +1,20 @@
 #!/usr/bin/env python3
-"""从各插件仓库的最新 Release 重建 index.json（未签名）。
+"""从各插件仓库的最新发布重建 index.json（未签名）。
 
 索引内容完全由 plugins.json 的 sources 决定：每次同步都重建整个 plugins 数组，
 条目的 url / sha256 直接取自插件仓库 Release 里的 index-entries.json 资产。
-内容没变就不动 seq（幂等）；变了 seq + 1。
 
-索引只收各插件的**当前版本**（每个仓库的 latest release）；回滚靠客户端本地的
-.versions/ 归档，不靠索引里的旧条目。
+「最新发布」= 仓库里版本号最大的 tag（不带 pre-release 后缀的优先）；对应 Release
+里没有 index-entries.json 资产就跳过这个仓库。这里只走 git 与 Releases 下载地址，
+不碰 GitHub API，所以不受 token 作用域和 API 速率限制影响。
+
+内容没变就不动 seq（幂等）；变了 seq + 1。
 
 用法：
     python3 scripts/sync.py --config plugins.json --index index.json
     （可选）--summary "$GITHUB_STEP_SUMMARY" 把结果写进 Actions 摘要
-    （可选）--token "$GH_TOKEN" 提 API 速率上限（公开仓库不需要）
 
-退出码：0 = 成功（有或没有变化都算成功）；1 = 有插件条目校验失败。
+退出码：0 = 成功；1 = 有条目凭空消失（发布被删 / 校验回归），此时不写文件。
 """
 
 from __future__ import annotations
@@ -22,11 +23,10 @@ import argparse
 import json
 import os
 import re
+import subprocess
 import sys
 import urllib.error
 import urllib.request
-
-API = "https://api.github.com"
 
 # 包名约定：pfm-plugin-<kind>-<id>，条目里的身份字段必须与包名一致
 REPO_NAME_RE = re.compile(r"^pfm-plugin-(driver|downloader)-([a-z0-9][a-z0-9_]*)$")
@@ -47,35 +47,49 @@ def die(msg: str) -> None:
     sys.exit(1)
 
 
-def http_get(url: str, token: str | None, *, accept: str) -> bytes:
-    """带一次重试的 GET；404 直接抛 HTTPError 交给调用方判断。"""
-    req = urllib.request.Request(url, headers={
-        "Accept": accept,
-        "User-Agent": "pfm-plugins-index-sync",
-        "X-GitHub-Api-Version": "2022-11-28",
-    })
-    if token:
-        req.add_header("Authorization", f"Bearer {token}")
-    last: Exception | None = None
-    for _ in range(3):
-        try:
-            with urllib.request.urlopen(req, timeout=60) as resp:
-                return resp.read()
-        except urllib.error.HTTPError as err:
-            if err.code == 404:
-                raise
-            last = err
-        except (urllib.error.URLError, TimeoutError) as err:
-            last = err
-    raise RuntimeError(f"请求失败：{url}（{last}）")
+def version_of(tag: str) -> str:
+    return tag[1:] if tag.startswith("v") else tag
 
 
-def fetch_json(url: str, token: str | None):
-    return json.loads(http_get(url, token, accept="application/vnd.github+json"))
+def version_key(tag: str) -> tuple:
+    """按版本号排序；带 pre-release 后缀的排在同一个正式版之后。"""
+    version = version_of(tag)
+    core, _, pre = version.partition("-")
+    parts = []
+    for chunk in core.split("."):
+        parts.append(int(chunk) if chunk.isdigit() else 0)
+    return (tuple(parts), 0 if pre else 1, pre)
 
 
-def fetch_asset(url: str, token: str | None) -> bytes:
-    return http_get(url, token, accept="application/octet-stream")
+def list_tags(repo: str) -> list[str]:
+    proc = subprocess.run(["git", "ls-remote", "--tags", "--refs",
+                           f"https://github.com/{repo}.git"],
+                          capture_output=True, text=True)
+    if proc.returncode != 0:
+        raise RuntimeError(proc.stderr.strip() or "git ls-remote 失败")
+    return [line.split("refs/tags/", 1)[1] for line in proc.stdout.splitlines()
+            if "refs/tags/" in line]
+
+
+def latest_tag(repo: str) -> str | None:
+    tags = [tag for tag in list_tags(repo) if VERSION_RE.match(version_of(tag))]
+    if not tags:
+        return None
+    return max(tags, key=version_key)
+
+
+def download(url: str) -> bytes | None:
+    """下载资产；404 返回 None（这个 tag 还没发布 Release 资产）。"""
+    req = urllib.request.Request(url, headers={"User-Agent": "pfm-plugins-index-sync"})
+    try:
+        with urllib.request.urlopen(req, timeout=120) as resp:
+            return resp.read()
+    except urllib.error.HTTPError as err:
+        if err.code == 404:
+            return None
+        raise
+    except (urllib.error.URLError, TimeoutError) as err:
+        raise RuntimeError(f"下载失败：{url}（{err}）") from err
 
 
 def normalize_entry(raw: dict, *, repo: str, tag: str, version: str, kind: str,
@@ -134,11 +148,10 @@ def normalize_entry(raw: dict, *, repo: str, tag: str, version: str, kind: str,
         "min_pfm_version": min_pfm,
         "released_at": released_at,
     }
-    # 落到固定字段顺序（omitempty 的另一个身份字段不出现）
     return {k: entry[k] for k in ENTRY_FIELDS if k in entry}
 
 
-def load_source(source: dict, token: str | None, problems: list[str]) -> list[dict]:
+def load_source(source: dict, problems: list[str]) -> list[dict]:
     repo = source.get("repo", "")
     owner, _, base = repo.partition("/")
     if not owner or not base:
@@ -151,28 +164,25 @@ def load_source(source: dict, token: str | None, problems: list[str]) -> list[di
     kind, plugin_id = matched.group(1), matched.group(2)
 
     try:
-        release = fetch_json(f"{API}/repos/{repo}/releases/latest", token)
-    except urllib.error.HTTPError as err:
-        if err.code == 404:
-            print(f"跳过 {repo}：还没有 Release（最新一次都没有发布过）")
-            return []
-        raise
-
-    tag = release.get("tag_name", "")
-    if release.get("draft") or release.get("prerelease"):
-        problems.append(f"{repo}：latest release {tag} 是 draft 或 prerelease")
+        tag = latest_tag(repo)
+    except RuntimeError as err:
+        # 仓库还不存在 / 还没公开都是常态（插件仓库逐个上线），不算错误；
+        # 真要是网络抽风导致条目丢失，下面的「凭空消失」检查会兜住。
+        first_line = (str(err).splitlines() or [""])[0]
+        print(f"跳过 {repo}：读不到 tag（仓库不存在或未公开）：{first_line}")
         return []
-    version = tag[1:] if tag.startswith("v") else tag
-    if not VERSION_RE.match(version):
-        problems.append(f"{repo}：tag {tag!r} 应为 v<版本号>")
+    if not tag:
+        print(f"跳过 {repo}：还没有版本 tag")
         return []
 
-    asset = next((a for a in release.get("assets", []) if a.get("name") == "index-entries.json"), None)
-    if asset is None:
-        problems.append(f"{repo}：release {tag} 里没有 index-entries.json 资产")
+    version = version_of(tag)
+    asset_url = f"https://github.com/{repo}/releases/download/{tag}/index-entries.json"
+    payload = download(asset_url)
+    if payload is None:
+        print(f"跳过 {repo}@{tag}：该 tag 还没有发布 Release 资产")
         return []
 
-    raw_entries = json.loads(fetch_asset(asset["browser_download_url"], token))
+    raw_entries = json.loads(payload)
     if not isinstance(raw_entries, list) or not raw_entries:
         problems.append(f"{repo}：index-entries.json 应为非空数组")
         return []
@@ -196,13 +206,13 @@ def load_source(source: dict, token: str | None, problems: list[str]) -> list[di
     return entries
 
 
-def managed_names(sources: list[dict]) -> list[tuple[str, str]]:
+def managed_names(sources: list[dict]) -> set[str]:
     """清单里合法的插件包名（用于判断「条目不翼而飞」）。"""
-    names = []
+    names = set()
     for source in sources:
         base = source.get("repo", "").partition("/")[2]
         if REPO_NAME_RE.match(base):
-            names.append((base, source.get("repo", "")))
+            names.add(base)
     return names
 
 
@@ -211,11 +221,9 @@ def render(index: dict) -> str:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="从各插件仓库的最新 Release 重建索引")
+    parser = argparse.ArgumentParser(description="从各插件仓库的最新发布重建索引")
     parser.add_argument("--config", default="plugins.json", help="插件仓库清单")
     parser.add_argument("--index", default="index.json", help="要重建的索引文件")
-    parser.add_argument("--token", default=os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN"),
-                        help="GitHub API token（公开仓库可省略）")
     parser.add_argument("--summary", default="", help="把结果追加进这个文件（Actions 摘要）")
     args = parser.parse_args()
 
@@ -228,8 +236,7 @@ def main() -> int:
     problems: list[str] = []
     entries: list[dict] = []
     for source in sources:
-        entries.extend(load_source(source, args.token, problems))
-
+        entries.extend(load_source(source, problems))
     entries.sort(key=lambda e: (e["kind"], e["name"], e["platform"]))
 
     old_payload = ""
@@ -246,9 +253,9 @@ def main() -> int:
         old_pairs = {(e.get("kind"), e.get("name"), e.get("platform"))
                      for e in old_index.get("plugins") or []}
 
-    # 仍然在清单里的插件，其条目不允许凭空消失（发布被删、校验回归都会命中），
+    # 仍然在清单里的插件，条目不允许凭空消失（发布被删、校验回归都会命中）；
     # 命中就不写文件，交给人处理。
-    managed = {name for name, _ in managed_names(sources)}
+    managed = managed_names(sources)
     new_pairs = {(e["kind"], e["name"], e["platform"]) for e in entries}
     lost = sorted((old_pairs - new_pairs), key=str)
     lost = [item for item in lost if item[1] in managed]
@@ -261,7 +268,7 @@ def main() -> int:
         return 1
 
     seq = old_seq
-    payload = render({"seq": old_seq, "plugins": entries})
+    payload = render({"seq": seq, "plugins": entries})
     changed = payload != old_payload
     if changed:
         seq = old_seq + 1 if old_seq else 1
@@ -275,19 +282,18 @@ def main() -> int:
         print(f"索引没有变化（seq {seq}，{len(entries)} 条）")
 
     if problems:
-        print("\n有插件被跳过（条目已失效，索引里没有它们）：", file=sys.stderr)
+        print("\n有插件被跳过（索引里没有它们）：", file=sys.stderr)
         for item in problems:
             print(f"  - {item}", file=sys.stderr)
 
     if args.summary:
-        lines = [f"### 索引同步", "",
+        lines = ["### 索引同步", "",
                  f"- 结果：{'已更新，seq ' + str(seq) if changed else '无变化，seq ' + str(seq)}",
                  f"- 条目：{len(entries)} 条"]
         if problems:
             lines += ["", "跳过的来源："] + [f"- {item}" for item in problems]
         with open(args.summary, "a", encoding="utf-8") as fh:
             fh.write("\n".join(lines) + "\n")
-
     return 0
 
 

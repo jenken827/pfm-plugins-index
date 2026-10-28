@@ -63,8 +63,8 @@ index.json.sig   base64 的 ed25519 签名，覆盖 index.json 原始字节
 `plugins.json` 是来源清单：每行一个插件仓库。同步工作流 `.github/workflows/sync.yml`
 （push 到 main、手动、以及每小时一次）会：
 
-1. 读每个仓库的**最新 Release**（跳过 prerelease / draft）；
-2. 取该 Release 里的 `index-entries.json` 资产（插件仓库自己的发布工作流产出的）；
+1. 读每个仓库的版本 tag，取版本号最大的那个（带 `-rc` 一类后缀的排在正式版之后）；
+2. 取该 tag 的 Release 里的 `index-entries.json` 资产（插件仓库自己的发布工作流产出的）；
 3. 校验条目：包名要形如 `pfm-plugin-<kind>-<id>`，`kind` / 身份字段 / `version` /
    `abi_version` 必须与包名和 tag 一致，`url` 必须指向该 Release 的
    `<name>-<version>-<platform>.tar.gz`，`sha256` 必须是 64 位小写十六进制；
@@ -79,7 +79,8 @@ index.json.sig   base64 的 ed25519 签名，覆盖 index.json 原始字节
   `.versions/` 归档，不靠索引里的旧条目。
 - 原本有条目、这次却同步不出来的插件，会让工作流**失败且不写文件**（发布被删、条目校验
   回归都会命中），不会静默把插件从索引里抹掉。
-- 还没发布过 Release 的仓库会被跳过并打一行日志，不影响其它插件。
+- 仓库不存在 / 未公开 / 还没有版本 tag、或者 tag 的 Release 里没有 `index-entries.json`，
+  都会被跳过并打一行日志，不影响其它插件——插件仓库是逐个上线的。
 - 私钥只放在 CI secret 里；`plugins.json` 的 `signing_public_key` 是 pfm 内置的那把公钥，
   配错私钥会在签名前报「私钥与期望公钥不匹配」。
 
