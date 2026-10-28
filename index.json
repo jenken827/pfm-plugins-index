@@ -1,4 +1,65 @@
 {
-  "seq": 1,
-  "plugins": []
+  "seq": 2,
+  "plugins": [
+    {
+      "name": "pfm-plugin-driver-baidu",
+      "kind": "driver",
+      "driver_id": "baidu",
+      "version": "1.0.0",
+      "abi_version": 1,
+      "platform": "darwin-amd64",
+      "url": "https://github.com/jenken827/pfm-plugin-driver-baidu/releases/download/v1.0.0/pfm-plugin-driver-baidu-1.0.0-darwin-amd64.tar.gz",
+      "sha256": "f2be10ceeb84ce4580243f31763fb8783a92df7f3fdaef4b93029a56f5edbbc9",
+      "min_pfm_version": "",
+      "released_at": "2026-10-28T02:36:14Z"
+    },
+    {
+      "name": "pfm-plugin-driver-baidu",
+      "kind": "driver",
+      "driver_id": "baidu",
+      "version": "1.0.0",
+      "abi_version": 1,
+      "platform": "darwin-arm64",
+      "url": "https://github.com/jenken827/pfm-plugin-driver-baidu/releases/download/v1.0.0/pfm-plugin-driver-baidu-1.0.0-darwin-arm64.tar.gz",
+      "sha256": "fe44ca6405a498b025f36e8be8708e1b55257301c541ae47379de62120876631",
+      "min_pfm_version": "",
+      "released_at": "2026-10-28T02:36:14Z"
+    },
+    {
+      "name": "pfm-plugin-driver-baidu",
+      "kind": "driver",
+      "driver_id": "baidu",
+      "version": "1.0.0",
+      "abi_version": 1,
+      "platform": "linux-amd64",
+      "url": "https://github.com/jenken827/pfm-plugin-driver-baidu/releases/download/v1.0.0/pfm-plugin-driver-baidu-1.0.0-linux-amd64.tar.gz",
+      "sha256": "38f5046a824d84b173bef43d7e102ce5ea05159f84272a19fad731cd423c77bf",
+      "min_pfm_version": "",
+      "released_at": "2026-10-28T02:36:14Z"
+    },
+    {
+      "name": "pfm-plugin-driver-baidu",
+      "kind": "driver",
+      "driver_id": "baidu",
+      "version": "1.0.0",
+      "abi_version": 1,
+      "platform": "linux-arm64",
+      "url": "https://github.com/jenken827/pfm-plugin-driver-baidu/releases/download/v1.0.0/pfm-plugin-driver-baidu-1.0.0-linux-arm64.tar.gz",
+      "sha256": "8252911809f4c3a948f122bbb0079eba2f18e83f3443f2ed7ccd484dd66c2c98",
+      "min_pfm_version": "",
+      "released_at": "2026-10-28T02:36:14Z"
+    },
+    {
+      "name": "pfm-plugin-driver-baidu",
+      "kind": "driver",
+      "driver_id": "baidu",
+      "version": "1.0.0",
+      "abi_version": 1,
+      "platform": "windows-amd64",
+      "url": "https://github.com/jenken827/pfm-plugin-driver-baidu/releases/download/v1.0.0/pfm-plugin-driver-baidu-1.0.0-windows-amd64.tar.gz",
+      "sha256": "b5db0d60c298b38593e4d495e5b5216a7a56d5baa45d2dfc0271d7d43d236ccd",
+      "min_pfm_version": "",
+      "released_at": "2026-10-28T02:36:14Z"
+    }
+  ]
 }
