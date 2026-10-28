@@ -58,24 +58,52 @@ index.json.sig   base64 的 ed25519 签名，覆盖 index.json 原始字节
 - `seq` 只增不减：客户端本地记录过更大的值，就会拒绝更旧的索引。
 - 插件包由**各插件自己的仓库**发布（`release/` 产物），不放在本仓库。
 
-## 发布一条新条目
+## 索引怎么更新（自动）
+
+`plugins.json` 是来源清单：每行一个插件仓库。同步工作流 `.github/workflows/sync.yml`
+（push 到 main、手动、以及每小时一次）会：
+
+1. 读每个仓库的**最新 Release**（跳过 prerelease / draft）；
+2. 取该 Release 里的 `index-entries.json` 资产（插件仓库自己的发布工作流产出的）；
+3. 校验条目：包名要形如 `pfm-plugin-<kind>-<id>`，`kind` / 身份字段 / `version` /
+   `abi_version` 必须与包名和 tag 一致，`url` 必须指向该 Release 的
+   `<name>-<version>-<platform>.tar.gz`，`sha256` 必须是 64 位小写十六进制；
+4. 重建整个 `plugins` 数组——索引完全由清单决定，**不要手改 index.json**；
+5. 内容有变化才 `seq + 1`，用 secret `INDEX_SIGNING_KEY` 签名，提交推送；
+6. 发一个 tag 为 `seq-<N>` 的 Release（`index.json` + `index.json.sig`）并标成 latest，
+   客户端的默认地址就是 `https://github.com/jenken827/pfm-plugins-index/releases/latest/download/index.json`。
+
+几条约定：
+
+- 索引只收各插件的**当前版本**（每个仓库的 latest release）。回滚靠客户端本地的
+  `.versions/` 归档，不靠索引里的旧条目。
+- 原本有条目、这次却同步不出来的插件，会让工作流**失败且不写文件**（发布被删、条目校验
+  回归都会命中），不会静默把插件从索引里抹掉。
+- 还没发布过 Release 的仓库会被跳过并打一行日志，不影响其它插件。
+- 私钥只放在 CI secret 里；`plugins.json` 的 `signing_public_key` 是 pfm 内置的那把公钥，
+  配错私钥会在签名前报「私钥与期望公钥不匹配」。
+
+### 一次性配置
+
+在仓库 `Settings → Secrets and variables → Actions` 加 secret `INDEX_SIGNING_KEY`，
+内容就是 `pfm plugin keygen` 写出的私钥文件（base64，32 字节种子或 64 字节完整私钥）。
+
+### 手工流程（没有 CI 时，或要临时插一条）
 
 ```bash
-# 1) 在插件仓库构建发布包（会打印 sha256）；下载器插件同样有这个脚本
-cd ../pfm-plugin-driver-baidu
-scripts/make-release.sh --version 1.0.0 --seq 1 \
-  --url-prefix https://github.com/jenken827/pfm-plugin-driver-baidu/releases/download/v1.0.0/ \
-  --key <索引签名私钥>
+# 1) 在插件仓库打 tag，等它自己的发布工作流出包（会带上 index-entries.json）
 
-# 2) 把 release/<pkg>.tar.gz 上传到插件仓库的 release（tag = v1.0.0）
+# 2) 本地重建索引（读各仓库最新 Release）并签名
+python3 scripts/sync.py --config plugins.json --index index.json
+python3 scripts/sign.py index.json --key <索引签名私钥> \
+  --expect-public-key "$(python3 -c 'import json;print(json.load(open("plugins.json"))["signing_public_key"])')"
 
-# 3) 把条目并进本仓库的 index.json，seq 递增，重新签名
-pfm plugin sign-index --key <索引签名私钥> index.json
-
-# 4) 提交并打 release（把 index.json 与 index.json.sig 一起作为 release 资产）
+# 3) 提交，并把 index.json 与 index.json.sig 一起传成 Release 资产（标 latest）
 ```
 
-⚠️ 签名私钥只在发布机上，**永远不要**提交到本仓库或插件仓库；
+签名与 `pfm plugin sign-index` 的产物等价（同一个私钥文件格式、同样覆盖 index.json 的原始字节）。
+
+⚠️ 签名私钥只在发布机与 CI secret 里，**永远不要**提交到本仓库或插件仓库；
 私钥泄露等于攻击者可以签名任意插件。
 
 ⚠️ 本索引只证明"包出自签名的发布流程"，**不证明代码安全**：插件与 pfm 宿主同权限运行，
