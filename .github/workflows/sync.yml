@@ -29,7 +29,8 @@ jobs:
       - name: 检出索引仓库
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          # 全量历史：提交前要 git pull --rebase，浅克隆 rebase 会缺 base
+          fetch-depth: 0
 
       - name: 从各插件仓库重建索引
         id: sync
