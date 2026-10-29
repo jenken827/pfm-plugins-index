@@ -1,5 +1,5 @@
 {
-  "seq": 6,
+  "seq": 7,
   "plugins": [
     {
       "name": "pfm-plugin-downloader-aria2",
@@ -240,6 +240,66 @@
       "sha256": "b4aabab0990e2e14829cde3669cf7d80fa3fad06f0c5616ac3f3320f1c2039bc",
       "min_pfm_version": "",
       "released_at": "2026-10-29T04:48:37Z"
+    },
+    {
+      "name": "pfm-plugin-driver-yun139",
+      "kind": "driver",
+      "driver_id": "yun139",
+      "version": "1.0.0",
+      "abi_version": 1,
+      "platform": "darwin-amd64",
+      "url": "https://github.com/jenken827/pfm-plugin-driver-yun139/releases/download/v1.0.0/pfm-plugin-driver-yun139-1.0.0-darwin-amd64.tar.gz",
+      "sha256": "a8a640f5bc0f06146c1fdeb5b20517a96fb1a68f3190a1c13dcd2cb6b4a11cf1",
+      "min_pfm_version": "",
+      "released_at": "2026-10-29T05:13:16Z"
+    },
+    {
+      "name": "pfm-plugin-driver-yun139",
+      "kind": "driver",
+      "driver_id": "yun139",
+      "version": "1.0.0",
+      "abi_version": 1,
+      "platform": "darwin-arm64",
+      "url": "https://github.com/jenken827/pfm-plugin-driver-yun139/releases/download/v1.0.0/pfm-plugin-driver-yun139-1.0.0-darwin-arm64.tar.gz",
+      "sha256": "e57341bc07e193ba21aadb5a7d11fa94fe7d0c90132d7e2731545ec197a04937",
+      "min_pfm_version": "",
+      "released_at": "2026-10-29T05:13:16Z"
+    },
+    {
+      "name": "pfm-plugin-driver-yun139",
+      "kind": "driver",
+      "driver_id": "yun139",
+      "version": "1.0.0",
+      "abi_version": 1,
+      "platform": "linux-amd64",
+      "url": "https://github.com/jenken827/pfm-plugin-driver-yun139/releases/download/v1.0.0/pfm-plugin-driver-yun139-1.0.0-linux-amd64.tar.gz",
+      "sha256": "98c5edbb584de79fac6ac679af56146f25951cd24597b5bf2fad8375f80ef5e0",
+      "min_pfm_version": "",
+      "released_at": "2026-10-29T05:13:16Z"
+    },
+    {
+      "name": "pfm-plugin-driver-yun139",
+      "kind": "driver",
+      "driver_id": "yun139",
+      "version": "1.0.0",
+      "abi_version": 1,
+      "platform": "linux-arm64",
+      "url": "https://github.com/jenken827/pfm-plugin-driver-yun139/releases/download/v1.0.0/pfm-plugin-driver-yun139-1.0.0-linux-arm64.tar.gz",
+      "sha256": "8ae7a855c6138af437c3d041bb62a610b4b20c5aaed9dfa7934a79331de2be0a",
+      "min_pfm_version": "",
+      "released_at": "2026-10-29T05:13:16Z"
+    },
+    {
+      "name": "pfm-plugin-driver-yun139",
+      "kind": "driver",
+      "driver_id": "yun139",
+      "version": "1.0.0",
+      "abi_version": 1,
+      "platform": "windows-amd64",
+      "url": "https://github.com/jenken827/pfm-plugin-driver-yun139/releases/download/v1.0.0/pfm-plugin-driver-yun139-1.0.0-windows-amd64.tar.gz",
+      "sha256": "1eb60d1d5106c7f67229bf508d0428fedbcff836d5c14f6999d921a72e3c4315",
+      "min_pfm_version": "",
+      "released_at": "2026-10-29T05:13:16Z"
     }
   ]
 }
