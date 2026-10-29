@@ -1,5 +1,5 @@
 {
-  "seq": 5,
+  "seq": 6,
   "plugins": [
     {
       "name": "pfm-plugin-downloader-aria2",
@@ -60,6 +60,66 @@
       "sha256": "b2d731135c9391dca8e1d40e727360be6f24b4fdae13fa6bf8e05b75aa5514d5",
       "min_pfm_version": "",
       "released_at": "2026-10-28T12:41:30Z"
+    },
+    {
+      "name": "pfm-plugin-driver-aliyundrive_open",
+      "kind": "driver",
+      "driver_id": "aliyundrive_open",
+      "version": "1.0.0",
+      "abi_version": 1,
+      "platform": "darwin-amd64",
+      "url": "https://github.com/jenken827/pfm-plugin-driver-aliyundrive_open/releases/download/v1.0.0/pfm-plugin-driver-aliyundrive_open-1.0.0-darwin-amd64.tar.gz",
+      "sha256": "b72af5c7ae13cdd421f9ee7cdd1f34188fe17007d1480b3515820343ae4ab348",
+      "min_pfm_version": "",
+      "released_at": "2026-10-29T05:02:50Z"
+    },
+    {
+      "name": "pfm-plugin-driver-aliyundrive_open",
+      "kind": "driver",
+      "driver_id": "aliyundrive_open",
+      "version": "1.0.0",
+      "abi_version": 1,
+      "platform": "darwin-arm64",
+      "url": "https://github.com/jenken827/pfm-plugin-driver-aliyundrive_open/releases/download/v1.0.0/pfm-plugin-driver-aliyundrive_open-1.0.0-darwin-arm64.tar.gz",
+      "sha256": "05575635bf467f9110cdceeeb8eb5d394e2a3d3729739113e5aadd5bf13f333a",
+      "min_pfm_version": "",
+      "released_at": "2026-10-29T05:02:50Z"
+    },
+    {
+      "name": "pfm-plugin-driver-aliyundrive_open",
+      "kind": "driver",
+      "driver_id": "aliyundrive_open",
+      "version": "1.0.0",
+      "abi_version": 1,
+      "platform": "linux-amd64",
+      "url": "https://github.com/jenken827/pfm-plugin-driver-aliyundrive_open/releases/download/v1.0.0/pfm-plugin-driver-aliyundrive_open-1.0.0-linux-amd64.tar.gz",
+      "sha256": "0ac6c08b2c46afb051da2fc14773e1691255305c56e396149adf2172aad55261",
+      "min_pfm_version": "",
+      "released_at": "2026-10-29T05:02:50Z"
+    },
+    {
+      "name": "pfm-plugin-driver-aliyundrive_open",
+      "kind": "driver",
+      "driver_id": "aliyundrive_open",
+      "version": "1.0.0",
+      "abi_version": 1,
+      "platform": "linux-arm64",
+      "url": "https://github.com/jenken827/pfm-plugin-driver-aliyundrive_open/releases/download/v1.0.0/pfm-plugin-driver-aliyundrive_open-1.0.0-linux-arm64.tar.gz",
+      "sha256": "cfeea82473c5d804adb1f54a86f95963344b52b599ef3e32506212813890c0cf",
+      "min_pfm_version": "",
+      "released_at": "2026-10-29T05:02:50Z"
+    },
+    {
+      "name": "pfm-plugin-driver-aliyundrive_open",
+      "kind": "driver",
+      "driver_id": "aliyundrive_open",
+      "version": "1.0.0",
+      "abi_version": 1,
+      "platform": "windows-amd64",
+      "url": "https://github.com/jenken827/pfm-plugin-driver-aliyundrive_open/releases/download/v1.0.0/pfm-plugin-driver-aliyundrive_open-1.0.0-windows-amd64.tar.gz",
+      "sha256": "5f0a1c6c543ed3d4e95e8a6c911538666a51fd8760ac30bdd3560202d4337bde",
+      "min_pfm_version": "",
+      "released_at": "2026-10-29T05:02:50Z"
     },
     {
       "name": "pfm-plugin-driver-baidu",
