@@ -1,5 +1,5 @@
 {
-  "seq": 4,
+  "seq": 5,
   "plugins": [
     {
       "name": "pfm-plugin-downloader-aria2",
@@ -120,6 +120,66 @@
       "sha256": "e5ac89f2c03f1128c9ae1c47a7dece6272b72b0cea73dac131f11b196543c452",
       "min_pfm_version": "",
       "released_at": "2026-10-28T12:41:12Z"
+    },
+    {
+      "name": "pfm-plugin-driver-pan123",
+      "kind": "driver",
+      "driver_id": "pan123",
+      "version": "1.0.0",
+      "abi_version": 1,
+      "platform": "darwin-amd64",
+      "url": "https://github.com/jenken827/pfm-plugin-driver-pan123/releases/download/v1.0.0/pfm-plugin-driver-pan123-1.0.0-darwin-amd64.tar.gz",
+      "sha256": "58352b64b18172e56f22bb7787f70e6c1e43ac4ddec4ded402ba25474ca6b2f3",
+      "min_pfm_version": "",
+      "released_at": "2026-10-29T04:48:37Z"
+    },
+    {
+      "name": "pfm-plugin-driver-pan123",
+      "kind": "driver",
+      "driver_id": "pan123",
+      "version": "1.0.0",
+      "abi_version": 1,
+      "platform": "darwin-arm64",
+      "url": "https://github.com/jenken827/pfm-plugin-driver-pan123/releases/download/v1.0.0/pfm-plugin-driver-pan123-1.0.0-darwin-arm64.tar.gz",
+      "sha256": "afd0960596426a4901482a4766037049e09d09e10cb4284be21966d8670708c7",
+      "min_pfm_version": "",
+      "released_at": "2026-10-29T04:48:37Z"
+    },
+    {
+      "name": "pfm-plugin-driver-pan123",
+      "kind": "driver",
+      "driver_id": "pan123",
+      "version": "1.0.0",
+      "abi_version": 1,
+      "platform": "linux-amd64",
+      "url": "https://github.com/jenken827/pfm-plugin-driver-pan123/releases/download/v1.0.0/pfm-plugin-driver-pan123-1.0.0-linux-amd64.tar.gz",
+      "sha256": "6e8af335a244cbaa38f9ad71aa752b0cdd98b97e4e794d6d4afcbe0861461bff",
+      "min_pfm_version": "",
+      "released_at": "2026-10-29T04:48:37Z"
+    },
+    {
+      "name": "pfm-plugin-driver-pan123",
+      "kind": "driver",
+      "driver_id": "pan123",
+      "version": "1.0.0",
+      "abi_version": 1,
+      "platform": "linux-arm64",
+      "url": "https://github.com/jenken827/pfm-plugin-driver-pan123/releases/download/v1.0.0/pfm-plugin-driver-pan123-1.0.0-linux-arm64.tar.gz",
+      "sha256": "0e64b00f4cf991dfcfc26da42e8e412ff4330b9686924023b1c5a9a9ea6cbc0e",
+      "min_pfm_version": "",
+      "released_at": "2026-10-29T04:48:37Z"
+    },
+    {
+      "name": "pfm-plugin-driver-pan123",
+      "kind": "driver",
+      "driver_id": "pan123",
+      "version": "1.0.0",
+      "abi_version": 1,
+      "platform": "windows-amd64",
+      "url": "https://github.com/jenken827/pfm-plugin-driver-pan123/releases/download/v1.0.0/pfm-plugin-driver-pan123-1.0.0-windows-amd64.tar.gz",
+      "sha256": "b4aabab0990e2e14829cde3669cf7d80fa3fad06f0c5616ac3f3320f1c2039bc",
+      "min_pfm_version": "",
+      "released_at": "2026-10-29T04:48:37Z"
     }
   ]
 }
