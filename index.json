@@ -1,5 +1,5 @@
 {
-  "seq": 7,
+  "seq": 8,
   "plugins": [
     {
       "name": "pfm-plugin-downloader-aria2",
@@ -240,6 +240,66 @@
       "sha256": "b4aabab0990e2e14829cde3669cf7d80fa3fad06f0c5616ac3f3320f1c2039bc",
       "min_pfm_version": "",
       "released_at": "2026-10-29T04:48:37Z"
+    },
+    {
+      "name": "pfm-plugin-driver-telegram",
+      "kind": "driver",
+      "driver_id": "telegram",
+      "version": "1.0.0",
+      "abi_version": 1,
+      "platform": "darwin-amd64",
+      "url": "https://github.com/jenken827/pfm-plugin-driver-telegram/releases/download/v1.0.0/pfm-plugin-driver-telegram-1.0.0-darwin-amd64.tar.gz",
+      "sha256": "dfd69d241583f3043fefb0b33beebaa8c77fc58751fbfe9607d1b54e550ce2b2",
+      "min_pfm_version": "",
+      "released_at": "2026-10-29T05:33:08Z"
+    },
+    {
+      "name": "pfm-plugin-driver-telegram",
+      "kind": "driver",
+      "driver_id": "telegram",
+      "version": "1.0.0",
+      "abi_version": 1,
+      "platform": "darwin-arm64",
+      "url": "https://github.com/jenken827/pfm-plugin-driver-telegram/releases/download/v1.0.0/pfm-plugin-driver-telegram-1.0.0-darwin-arm64.tar.gz",
+      "sha256": "58086df50cbebb840dbbd886d8cc00b868ce18cc0e6f4151a4a49c102143da0e",
+      "min_pfm_version": "",
+      "released_at": "2026-10-29T05:33:08Z"
+    },
+    {
+      "name": "pfm-plugin-driver-telegram",
+      "kind": "driver",
+      "driver_id": "telegram",
+      "version": "1.0.0",
+      "abi_version": 1,
+      "platform": "linux-amd64",
+      "url": "https://github.com/jenken827/pfm-plugin-driver-telegram/releases/download/v1.0.0/pfm-plugin-driver-telegram-1.0.0-linux-amd64.tar.gz",
+      "sha256": "ca8f24b1f408dd1dc1117908a43dda888bf82008b82854f98b8bed7ba4972eac",
+      "min_pfm_version": "",
+      "released_at": "2026-10-29T05:33:08Z"
+    },
+    {
+      "name": "pfm-plugin-driver-telegram",
+      "kind": "driver",
+      "driver_id": "telegram",
+      "version": "1.0.0",
+      "abi_version": 1,
+      "platform": "linux-arm64",
+      "url": "https://github.com/jenken827/pfm-plugin-driver-telegram/releases/download/v1.0.0/pfm-plugin-driver-telegram-1.0.0-linux-arm64.tar.gz",
+      "sha256": "04932ca83698fec619db195bd92fd9c2db768ce8bcbd5691a4647128451cd481",
+      "min_pfm_version": "",
+      "released_at": "2026-10-29T05:33:08Z"
+    },
+    {
+      "name": "pfm-plugin-driver-telegram",
+      "kind": "driver",
+      "driver_id": "telegram",
+      "version": "1.0.0",
+      "abi_version": 1,
+      "platform": "windows-amd64",
+      "url": "https://github.com/jenken827/pfm-plugin-driver-telegram/releases/download/v1.0.0/pfm-plugin-driver-telegram-1.0.0-windows-amd64.tar.gz",
+      "sha256": "8ef3d16c71dff0388500fb84d945e86b9c89901651b7ec641ca697893ba4e5cb",
+      "min_pfm_version": "",
+      "released_at": "2026-10-29T05:33:08Z"
     },
     {
       "name": "pfm-plugin-driver-yun139",
